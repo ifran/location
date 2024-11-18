@@ -177,11 +177,13 @@
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
             <div class="form-floating">
-                <input type="email" name="user" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="text" name="user" class="form-control" id="floatingInput"
+                    placeholder="name@example.com">
                 <label for="floatingInput">Email address</label>
             </div>
             <div class="form-floating">
-                <input type="password" name="pass"  class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" name="pass" class="form-control" id="floatingPassword"
+                    placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
 
@@ -191,9 +193,13 @@
                     Remember me
                 </label>
             </div>
-            <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
-            <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p>
+            <div class="m-auto">
+                <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
+            </div>
         </form>
+        <div>
+            <a class="btn btn-primary w-100 py-1" href="register">Cadastrar</a>
+        </div>
     </main>
     <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
 
