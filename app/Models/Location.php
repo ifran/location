@@ -22,6 +22,8 @@ class Location extends Model
         'location_address',
         'location_desc',
         'location_img',
+        'location_lat',
+        'location_long',
         'user_id',
     ];
 

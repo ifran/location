@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\LocationController;
 use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,8 @@ Route::get('/register', [UserController::class, 'form']);
 Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('user')->group(function () {
+    Route::get('/register-location', [LocationController::class, 'index']);
+    Route::post('/register-location', [LocationController::class, 'save']);
+
     Route::get('/home', [HomeController::class, 'index']);
 });
