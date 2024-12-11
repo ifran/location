@@ -17,9 +17,6 @@
     </style>
 </head>
 
-<!--
--->
-
 <body class="bg-dark">
 
     <header data-bs-theme="dark">
@@ -50,14 +47,15 @@
             <div class="col-md-8 order-md-1">
                 <form class="needs-validation" id="local-form">
                     @csrf
+                    <input type="hidden" name="id" value="{{ $location->location_id ?? null }}">
                     <div class="mb-3">
                         <label for="nome">Nome do Local</label>
-                        <input type="text" class="form-control" id="nome" name="nome">
+                        <input type="text" class="form-control" id="nome" name="nome" value="{{ $location->location_name ?? null }}">
                     </div>
 
                     <div class="mb-3">
                         <label for="imagem" class="form-label">Imagem do Local</label>
-                        <input type="file" class="form-control" id="imagem" name="imagem">
+                        <input type="file" class="form-control" id="imagem" name="imagem" value="{{ $location->location_img ?? null }}">
                     </div>
 
                     <div class="mb-3">
@@ -77,7 +75,7 @@
 
                     <div class="mb-3">
                         <label for="endereco">Endereço</label>
-                        <input type="text" class="form-control" id="endereco" name="endereco">
+                        <input type="text" class="form-control" id="endereco" name="endereco" value="{{ $location->location_address ?? null }}">
                     </div>
 
                     <div class="mb-3">
@@ -87,7 +85,7 @@
 
                     <div class="mb-3">
                         <label for="numero">Descrição</label>
-                        <textarea class="form-control" id="descricao" rows="3" name="descricao"></textarea>
+                        <textarea class="form-control" id="descricao" rows="3" name="descricao">{{ $location->location_desc ?? null }}</textarea>
                     </div>
 
                     <hr class="mb-4">
@@ -124,7 +122,6 @@
 
             address = "address=" + estado + cidade + bairro + endereco + numero
             address += "&key=AIzaSyDiHZeqzK9xvUnsPTt9_6BJ4766ew0vT3w";
-            // address=avenidacristov%C3%A3ocolombo2948portoalegre&key=AIzaSyDiHZeqzK9xvUnsPTt9_6BJ4766ew0vT3w
 
             $.ajax({
                 url: 'https://maps.googleapis.com/maps/api/geocode/json?' + address,
@@ -144,13 +141,11 @@
             var form = document.getElementById('local-form');
             var formData = new FormData(form);
 
-            // Adicionando o arquivo ao FormData
-            var fileInput = document.getElementById('imagem'); // Supondo que o input file tenha esse ID
+            var fileInput = document.getElementById('imagem');
             if (fileInput && fileInput.files[0]) {
-                formData.append('imagem', fileInput.files[0]); // 'imagem' será o nome do campo no backend
+                formData.append('imagem', fileInput.files[0]);
             }
 
-            // Adicionando outros dados extras
             formData.append('lat', lat);
             formData.append('lng', lng);
             formData.append('_token', document.getElementsByName('_token')[0].value);
@@ -159,14 +154,15 @@
                 url: './register-location',
                 type: 'POST',
                 data: formData,
-                processData: false, // Impede que o jQuery processe os dados
-                contentType: false, // Deixa o navegador configurar o cabeçalho corretamente
+                processData: false,
+                contentType: false,
                 success: function(data) {
-                    // Lógica em caso de sucesso
+                    if (data.msg == "Sucesso") {
+                        window.location.href = './home';
+                    }
                 },
                 error: function(error) {
-                    $('#result').html('<p>Erro ao buscar os dados.</p>');
-                    console.error(error);
+                    console.log(error);
                 }
             });
 

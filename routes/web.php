@@ -28,5 +28,8 @@ Route::middleware('user')->group(function () {
     Route::get('/register-location', [LocationController::class, 'index']);
     Route::post('/register-location', [LocationController::class, 'save']);
 
+    Route::get('/user', [UserController::class, 'form']);
+
     Route::get('/home', [HomeController::class, 'index']);
+    Route::post('/home', [HomeController::class, 'index']);
 });

@@ -8,23 +8,30 @@ class LocationService
 {
     public function handleInformationAndSave($request)
     {
+        $location = $request->all();
+
+        if (!empty($location["id"])) {
+            $local = Location::find($location["id"]);
+        } else {
+            $local = new Location();
+        }
+
         $request->validate([
             'imagem' => 'mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $extension = $request->file('imagem')->getClientOriginalExtension();
-        $filename = uniqid() . '.' . $extension;
-        $request->file('imagem')->storeAs('images', $filename, 'public');
+        if ($request->file('imagem') !== null) {
+            $extension = $request->file('imagem')->getClientOriginalExtension();
+            $filename = uniqid() . '.' . $extension;
+            $request->file('imagem')->storeAs('images', $filename, 'public');
+            $local->location_img = $filename;
+        }
 
-        $location = $request->all();
-
-        $local = new Location();
         $local->location_name = $location['nome'];
         $local->location_address = $location['estado'] . " " . $location['cidade'] . " " . $location['bairro'] . " " . $location['endereco'] . " " . $location['numero'];
         $local->location_desc = $location['descricao'];
         $local->location_lat = $location['lat'];
         $local->location_long = $location['lng'];
-        $local->location_img = $filename;
         $local->user_id = session()->get("userId");
         $local->save();
     }

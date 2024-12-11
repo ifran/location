@@ -109,6 +109,9 @@
                 <a href="./register-location" class="navbar-brand d-flex align-items-center">
                     <strong>Registrar Local</strong>
                 </a>
+                <a href="./about" class="navbar-brand d-flex align-items-center">
+                    <strong>Sobre Nós</strong>
+                </a>
                 <a href="./logout" class="navbar-brand d-flex align-items-center">
                     <strong>Sair</strong>
                 </a>
@@ -122,26 +125,50 @@
         </div>
     @else
         <div class="d-flex">
-            <div class="p-3 bg-secondary text-white" style="width: 100vw; height: 90vh;" id="map"></div>
+            <div class="p-3 bg-secondary text-white" style="width: 100vw; height: 92vh;" id="map"></div>
 
-            <div class="row">
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <img src="aaa" />
-                        <div class="card-body">
-                            <p class="card-text">
-                                This is a wider card with supporting text below as a natural
-                                lead-in to additional content. This content is a little bit longer.
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
+            <div class="row" style="margin: 0">
+                <div class="col overflow-auto" style="height: 85vh;">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filters"
+                        aria-expanded="false" aria-controls="filters" style="width: 100%">
+                        Filtrar Locais
+                    </button>
+                    <div id="filters" class="collapse">
+                        <form action="./home" method="post">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="nome">Nome do Local</label>
+                                <input type="text" class="form-control" id="nome" name="nome">
+                            </div>
+                            <div class="mb-3">
+                                <label for="endereco">Endereço Aproximado</label>
+                                <input type="text" class="form-control" id="endereco" name="endereco">
+                            </div>
+                            <input class="btn btn-secondary" type="submit" style="width: 100%" value="Aplicar filtros">
+                        </form>
+                    </div>
+                    @foreach ($locations as $location)
+                        <div class="card shadow-sm d-flex flex-row align-items-center">
+                            <img src="{{ asset('storage/images') . '/' . $location->location_img }}"
+                                style="height: 20vh; width: 10vw; margin-right: 10px;" alt="Imagem">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <label>Nome: </label>
+                                    {{ $location->location_name }}
+                                </p>
+                                <p class="card-text">
+                                    <label>Endereço: </label>
+                                    {{ $location->location_address }}
+                                </p>
+                                <p class="card-text">
+                                    {{ $location->location_desc }}
+                                </p>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <a type="button" href="./register-location?id={{ $location->location_id }}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 </div>
-                                <small class="text-body-secondary">9 mins</small>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -175,10 +202,8 @@
                 disableAutoPan: true,
             });
 
-            // Create an array of alphabetical characters used to label the markers.
             const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-            // Add some markers to the map.
             const markers = locations.map((position, i) => {
                 const label = labels[i % labels.length];
                 const pinGlyph = new google.maps.marker.PinElement({
@@ -192,16 +217,12 @@
                     content: pinGlyph.element,
                 });
 
-
                 google.maps.event.addListener(marker, 'click', function(evt) {
-                    // BUSCAR OS LOCAIS PELAS LAT LONG
                     console.log(marker.position.Fg);
                     console.log(marker.position.Hg);
 
                 });
 
-                // markers can only be keyboard focusable when they have click listeners
-                // open info window when marker is clicked
                 marker.addListener("click", () => {
                     infoWindow.setContent(position.lat + ", " + position.lng);
                     infoWindow.open(map, marker);
@@ -210,24 +231,23 @@
                 return marker;
             });
 
-            // Add a marker clusterer to manage the markers.
             const markerCluster = new markerClusterer.MarkerClusterer({
                 markers,
                 map
             });
         }
 
-        const locations = [{
-            lat: -30.0171167,
-            lng: -51.1908724
-        }, {
+        const locations = [
+            @php
+                $val = '';
+                foreach ($locations as $location) {
+                    $val .= '{ lat: ' . $location->location_lat . ',' . 'lng:' . $location->location_long . '},';
+                }
 
-            lat: -30.0174543,
-            lng: -51.1914113
-        }, {
-            lat: -30.078944823848122,
-            lng: -51.22699349840304
-        }];
+                $val = substr($val, 0, -1);
+                echo $val;
+            @endphp
+        ];
 
         initMap();
     </script>
